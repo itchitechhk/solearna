@@ -31,7 +31,7 @@ import MDButton from "components/MDButton";
 import IllustrationLayout from "layouts/authentication/components/IllustrationLayout";
 
 // Image
-import bgImage from "assets/images/illustrations/Login.jpg";
+import bgImage from "assets/images/illustrations/login.jpeg";
 
 import firebase from "firebase";
 // import SweetAlert from "react-bootstrap-sweetalert";

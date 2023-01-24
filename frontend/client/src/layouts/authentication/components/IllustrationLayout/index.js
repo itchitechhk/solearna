@@ -33,6 +33,8 @@ import pageRoutes from "page.routes";
 // Material Dashboard 2 PRO React context
 import { useMaterialUIController } from "context";
 import Loc from "localization";
+import { AspectRatio } from 'react-aspect-ratio';
+
 
 function IllustrationLayout({
   header,
@@ -62,17 +64,17 @@ function IllustrationLayout({
             darkMode ? background.default : white.main,
         }}
       >
+        
         <Grid item xs={12} lg={6}>
           <MDBox
-            display={{ xs: "none", lg: "flex" }}
-            width="calc(100% - 2rem)"
-            height="calc(100vh - 2rem)"
-            borderRadius="lg"
-            ml={2}
-            mt={2}
-            sx={{ }}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            height="100vh"
           >
-          <img src={illustration} style={{width: "100%"}}/>
+            <AspectRatio ratio="1/1">
+              <img src={illustration} style={{width: "100%"}}/>
+            </AspectRatio>
           </MDBox>
         </Grid>
         <Grid item xs={11} sm={8} md={6} lg={4} xl={3} sx={{ mx: "auto" }}>
