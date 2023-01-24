@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.8aee94e2.css",
-    "main.js": "/static/js/main.663714b7.js",
+    "main.js": "/static/js/main.f2585252.js",
     "static/media/pattern-tree.svg": "/static/media/pattern-tree.156bb943ac7fd244f10c115d085e085e.svg",
     "static/media/Register.png": "/static/media/Register.6fff1c8bd1d79b5b127c.png",
     "static/media/product-11.jpg": "/static/media/product-11.a5600b8de08405e600c3.jpg",
@@ -80,10 +80,10 @@
     "static/media/logo-asana.svg": "/static/media/logo-asana.d758f410d82760a61d1eabcb03409de6.svg",
     "index.html": "/index.html",
     "main.8aee94e2.css.map": "/static/css/main.8aee94e2.css.map",
-    "main.663714b7.js.map": "/static/js/main.663714b7.js.map"
+    "main.f2585252.js.map": "/static/js/main.f2585252.js.map"
   },
   "entrypoints": [
     "static/css/main.8aee94e2.css",
-    "static/js/main.663714b7.js"
+    "static/js/main.f2585252.js"
   ]
 }

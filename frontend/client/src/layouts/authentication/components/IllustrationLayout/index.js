@@ -71,10 +71,19 @@ function IllustrationLayout({
             flexDirection="column"
             justifyContent="center"
             height="100vh"
+            // px={5}
+            // style={{backgroundColor:"red"}}
           >
-            <AspectRatio ratio="1/1">
-              <img src={illustration} style={{width: "100%"}}/>
-            </AspectRatio>
+            <MDBox 
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              // style={{backgroundColor: "blue"}}
+              >
+              {/* <AspectRatio ratio="1/1"> */}
+                <img src={illustration} style={{width: "80%", alignSelf: "cneter"}}/>
+              {/* </AspectRatio> */}
+            </MDBox>
           </MDBox>
         </Grid>
         <Grid item xs={11} sm={8} md={6} lg={4} xl={3} sx={{ mx: "auto" }}>
