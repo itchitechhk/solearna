@@ -104,6 +104,8 @@ function Homepage() {
   const [isLoading, set_isLoading] = React.useState(true);
   const [courseArray, setCourseArray] = React.useState([]);
   const [profileData, set_profileData] = React.useState(null);
+  const [topicData, set_topicData] = React.useState(null);
+
   
 
   const [tabsOrientation, setTabsOrientation] = React.useState("horizontal");
@@ -129,6 +131,9 @@ function Homepage() {
     const [developerFirstMenu, setDeveloperFirstMenu] = useState(null);
 
     const [isLoadingProfile, set_isLoadingProfile] = useState(true);
+    const [isLoadingTopicList, set_isLoadingTopicList] = useState(true);
+
+    
 
     // const renderMenu = (state, close) => (
     //   <Menu
@@ -184,6 +189,7 @@ function Homepage() {
         setSignedIn(true);
         get_courseData();
         get_profile();
+        get_topic_list();
       } else {
         // User is signed out.
         console.log("NOT signed in");
@@ -208,6 +214,26 @@ function Homepage() {
       },
       (error) => {
         console.log("Get profile fail");
+      }
+    );
+  }
+
+  function get_topic_list()
+  {
+    const body = {}
+
+    fetchAPI.do_fetch("post", "user/list_topic", body).then(
+      (res) => {
+        const returnData = res.data;
+        const list_topic = returnData.data_list;
+        // console.log(`list_topic: ${JSON.stringify(list_topic)}`);
+
+        set_topicData(list_topic);
+        set_isLoadingTopicList(false);
+
+      },
+      (error) => {
+        console.log("Get topic list fail");
       }
     );
   }
@@ -303,9 +329,155 @@ function Homepage() {
     let body = state;
     body.language_code = language;
     body.topicID = topicID;
-    body.passRate = 50;
+    // body.passRate = 50;
     body.data_quiz_data = data;
     setItemToEdit(body);
+  }
+
+  function render_topic_cards(data_topics)
+  {
+    return data_topics == null ? null : data_topics.map(data => {
+      return (
+        <Grid item xs={12} md={6} lg={4}>
+          <MDBox mb={1.5} mt={1.5}>
+            <TopicCard
+              image={data.topic_icon_url}
+              title={data.topic_name}
+              description={data.topic_description}
+              max_quota={parseInt(data.max_quota)}
+              members={[team1, team2, team3, team4, team5]}
+              isEnabled={true}
+              callback_onclick={() => {join_topic_clicked("B4qfsQ9EsKj49nUD0JTw", data)}}
+              price={data.price}
+              totalJoin={data.participants}
+              
+              // dropdown={{
+              //   action: openSlackBotMenu,
+              //   menu: renderMenu(slackBotMenu, closeSlackBotMenu),
+              // }}
+            />
+          </MDBox>
+        </Grid>
+      )
+    });
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_1}
+    //       title="Learn Maths with Jennifer"
+    //       description="Learn Maths with Jennifer is an online course designed for students who want to improve their mathematical skills."
+    //       dateTime="02.03.23"
+    //       members={[team1, team2, team3, team4, team5]}
+    //       isEnabled={true}
+    //       callback_onclick={() => {join_topic_clicked("B4qfsQ9EsKj49nUD0JTw", data_quiz_1)}}
+    //       price={10.0}
+    //       totalJoin={241}
+          
+    //       // dropdown={{
+    //       //   action: openSlackBotMenu,
+    //       //   menu: renderMenu(slackBotMenu, closeSlackBotMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_2}
+    //       title="Learn History with Professor Ming"
+    //       description="Learn History with Professor Ming is an online course led by a renowned historian, covering a wide range of historical topics from a global perspective."
+    //       dateTime="22.11.23"
+    //       members={[team1, team2, team3]}
+    //       isEnabled={true}
+    //       callback_onclick={() => {join_topic_clicked("whza4kQGhWjalYnsGZXz", data_quiz_2)}}
+    //       price={12.0}
+    //       totalJoin={412}
+
+    //       // dropdown={{
+    //       //   action: openPremiumSupportMenu,
+    //       //   menu: renderMenu(premiumSupportMenu, closePremiumSupportMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_3}
+    //       title="DNA is our friend"
+    //       description="DNA is Our Friend is an online course that covers the basics of DNA and its role in life, including the latest advances in DNA research and its applications."
+    //       dateTime="06.03.23"
+    //       members={[team1, team2, team3, team4]}
+    //       isEnabled={true}
+    //       callback_onclick={() => {join_topic_clicked("6GXF9S0Ah0R461PSKmLk", data_quiz_3)}}
+    //       price={8.5}
+    //       totalJoin={78}
+
+    //       // dropdown={{
+    //       //   action: openDesignToolsMenu,
+    //       //   menu: renderMenu(designToolsMenu, closeDesignToolsMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_4}
+    //       title="Introduction to Newton's Laws of Motion"
+    //       description="This is an online course that covers Newton's three laws of motion and their applications in various fields such as mechanics, engineering, and astronautics."
+    //       dateTime="14.03.24"
+    //       members={[team1, team2, team3, team4, team5, team3]}
+    //       isEnabled={false}
+    //       callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
+    //       totalJoin={621}
+    //       price={11.0}
+    //       // dropdown={{
+    //       //   action: openLookingGreatMenu,
+    //       //   menu: renderMenu(lookingGreatMenu, closeLookingGreatMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_5}
+    //       title="HKCEE English"
+    //       description="HKCEE English is an online course designed to prepare students for the HKCEE English Language paper by covering essential grammar, vocabulary, and comprehension skills. Led by experienced and highly qualified teachers."
+    //       dateTime="16.01.23"
+    //       members={[team1, team2, team3, team4]}
+    //       isEnabled={false}
+    //       callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
+    //       price={99.0}
+    //       totalJoin={315}
+
+    //       // dropdown={{
+    //       //   action: openDeveloperFirstMenu,
+    //       //   menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
+    // <Grid item xs={12} md={6} lg={4}>
+    //   <MDBox mb={1.5} mt={1.5}>
+    //     <TopicCard
+    //       image={icon_topic_6}
+    //       title="Astro Math"
+    //       description="Astro Maths is an online course that covers mathematical concepts and methods used in astronomy, including Astrophotography."
+    //       dateTime="16.01.23"
+    //       members={[team1, team2, team3, team4]}
+    //       isEnabled={false}
+    //       callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
+    //       price={"0"}
+    //       totalJoin={1425}
+    //       // dropdown={{
+    //       //   action: openDeveloperFirstMenu,
+    //       //   menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
+    //       // }}
+    //     />
+    //   </MDBox>
+    // </Grid>
   }
 
   return isLoading === true ? loadingBox : (
@@ -593,124 +765,7 @@ function Homepage() {
 
             <MDBox mt={5}>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_1}
-                      title="Learn Maths with Jennifer"
-                      description="Learn Maths with Jennifer is an online course designed for students who want to improve their mathematical skills."
-                      dateTime="02.03.23"
-                      members={[team1, team2, team3, team4, team5]}
-                      isEnabled={true}
-                      callback_onclick={() => {join_topic_clicked("B4qfsQ9EsKj49nUD0JTw", data_quiz_1)}}
-                      price={10.0}
-                      totalJoin={241}
-                      
-                      // dropdown={{
-                      //   action: openSlackBotMenu,
-                      //   menu: renderMenu(slackBotMenu, closeSlackBotMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_2}
-                      title="Learn History with Professor Ming"
-                      description="Learn History with Professor Ming is an online course led by a renowned historian, covering a wide range of historical topics from a global perspective."
-                      dateTime="22.11.23"
-                      members={[team1, team2, team3]}
-                      isEnabled={true}
-                      callback_onclick={() => {join_topic_clicked("whza4kQGhWjalYnsGZXz", data_quiz_2)}}
-                      price={12.0}
-                      totalJoin={412}
-
-                      // dropdown={{
-                      //   action: openPremiumSupportMenu,
-                      //   menu: renderMenu(premiumSupportMenu, closePremiumSupportMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_3}
-                      title="DNA is our friend"
-                      description="DNA is Our Friend is an online course that covers the basics of DNA and its role in life, including the latest advances in DNA research and its applications."
-                      dateTime="06.03.23"
-                      members={[team1, team2, team3, team4]}
-                      isEnabled={true}
-                      callback_onclick={() => {join_topic_clicked("6GXF9S0Ah0R461PSKmLk", data_quiz_3)}}
-                      price={8.5}
-                      totalJoin={78}
-
-                      // dropdown={{
-                      //   action: openDesignToolsMenu,
-                      //   menu: renderMenu(designToolsMenu, closeDesignToolsMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_4}
-                      title="Introduction to Newton's Laws of Motion"
-                      description="This is an online course that covers Newton's three laws of motion and their applications in various fields such as mechanics, engineering, and astronautics."
-                      dateTime="14.03.24"
-                      members={[team1, team2, team3, team4, team5, team3]}
-                      isEnabled={false}
-                      callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
-                      totalJoin={621}
-                      price={11.0}
-                      // dropdown={{
-                      //   action: openLookingGreatMenu,
-                      //   menu: renderMenu(lookingGreatMenu, closeLookingGreatMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_5}
-                      title="HKCEE English"
-                      description="HKCEE English is an online course designed to prepare students for the HKCEE English Language paper by covering essential grammar, vocabulary, and comprehension skills. Led by experienced and highly qualified teachers."
-                      dateTime="16.01.23"
-                      members={[team1, team2, team3, team4]}
-                      isEnabled={false}
-                      callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
-                      price={99.0}
-                      totalJoin={315}
-
-                      // dropdown={{
-                      //   action: openDeveloperFirstMenu,
-                      //   menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={1.5} mt={1.5}>
-                    <TopicCard
-                      image={icon_topic_6}
-                      title="Astro Math"
-                      description="Astro Maths is an online course that covers mathematical concepts and methods used in astronomy, including Astrophotography."
-                      dateTime="16.01.23"
-                      members={[team1, team2, team3, team4]}
-                      isEnabled={false}
-                      callback_onclick={() => {join_topic_clicked("4cl1UioqVKZPDvXzCNcA")}}
-                      price={"0"}
-                      totalJoin={1425}
-                      // dropdown={{
-                      //   action: openDeveloperFirstMenu,
-                      //   menu: renderMenu(developerFirstMenu, closeDeveloperFirstMenu),
-                      // }}
-                    />
-                  </MDBox>
-                </Grid>
+                {render_topic_cards(topicData)}
               </Grid>
             </MDBox>
 

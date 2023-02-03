@@ -45,6 +45,7 @@ function CreateTopic() {
     const [isSignedIn, setSignedIn] = React.useState(false);
     const [isCheckedSignIn, set_isCheckedSignIn] = React.useState(false);
     const [data_quiz, set_data_quiz] = React.useState([]);
+    const [data_quiz_info, set_data_quiz_info] = React.useState({});
     
 
 
@@ -65,14 +66,14 @@ function CreateTopic() {
     // Start navigate after setstate is completed
     useEffect(() => {
         if (itemToEdit !== null) {
-        console.log("Selected Navigation", pathToRedirect);
+        // console.log("Selected Navigation", pathToRedirect);
         check_redirect();
         }
 
         if (language_code != null)
         {
         set_Language(language_code);
-        console.log("language_code: " + language_code);
+        // console.log("language_code: " + language_code);
         }
     }, [itemToEdit]);
 
@@ -83,11 +84,11 @@ function CreateTopic() {
       if (user) {
         set_isLoading(false);
         // User is signed in.
-        console.log("Checking, signed in");
+        // console.log("Checking, signed in");
         setSignedIn(true);
       } else {
         // User is signed out.
-        console.log("NOT signed in");
+        // console.log("NOT signed in");
         setRedirect("/authentication/sign-in/illustration");
         setItemToEdit("");
         setSignedIn(false);
@@ -101,13 +102,16 @@ function CreateTopic() {
     set_isCheckedSignIn(false);
     const subscription_auth = add_authListener();
 
-    const new_q = {
-        "question":"",
-        "selections":[""],
-        "correctIndex":[false]
+    if (data_quiz.length == 0)
+    {
+        const new_q = {
+            "question":"",
+            "selections":[""],
+            "correctIndex":[false]
+        }
+        data_quiz.push(new_q)
+        set_data_quiz([...data_quiz]);
     }
-    data_quiz.push(new_q)
-    set_data_quiz([...data_quiz]);
 
     return function cleanup() {
       subscription_auth();
@@ -177,10 +181,77 @@ function CreateTopic() {
     );
   }
 
+  function render_question_info(infoData)
+  {
+    var data = infoData;
+    return (
+        <MDBox component="form" pb={3} px={3}>
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <FormField label="Topic Name" placeholder="Enter the topic name here" value={data.topic_name} onChange={(e) => {
+                        data.topic_name = e.target.value;
+                        set_data_quiz_info(data);
+                    }}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormField label="Description" placeholder="Tell us about your topic" value={data.topic_description} onChange={(e) => {
+                        data.topic_description = e.target.value;
+                        set_data_quiz_info(data);
+                    }}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormField label="Topic Icon URL" placeholder="Enter the url of your topic icon" value={data.topic_icon_url} onChange={(e) => {
+                        data.topic_icon_url = e.target.value;
+                        set_data_quiz_info(data);
+                    }}/>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <div style={{display: "flex"}}>
+                        {/* <MDBox> */}
+                            <img src={SOL} style={{ width: 30, height: 30, alignSelf: 'center'}}/>
+                        {/* </MDBox> */}
+                        {/* <MDBox> */}
+                            <FormField label="Course Fee ($SOL)" placeholder="Price for this course" type="number" value={data.price} onChange={(e) => {
+                                data.price = e.target.value;
+                                set_data_quiz_info(data);
+                            }}/>
+                        {/* </MDBox> */}
+                    </div>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <FormField label="Max Quota (0 = Unlimited)" placeholder="Max Quota for the course" type="number" value={data.max_quota} onChange={(e) => {
+                        data.max_quota = e.target.value;
+                        set_data_quiz_info(data);
+                    }}/>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <FormField label="Pass Rate (50 = 50%)" placeholder="Pass rate of the course" type="number" value={data.pass_rate} onChange={(e) => {
+                        data.pass_rate = e.target.value;
+                        set_data_quiz_info(data);
+                    }}/>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <div style={{display: "flex"}}>
+                        <img src={ICON_YOUTUBE} style={{ width: 30, height: 30, alignSelf: 'center'}}/>
+                        <FormField label="Youtube Link" placeholder="Enter Video Link here" value={data.youtube_embed_code} onChange={(e) => {
+                            data.youtube_embed_code = e.target.value;
+                            set_data_quiz_info(data);
+                        }}/>
+                    </div>
+                </Grid>
+            </Grid>
+        </MDBox>
+    );
+  }
+
   function render_question_part(quizData)
   {
-    console.log(`quizData: ${JSON.stringify(quizData)}`)
-    console.log("quizData.length: " + quizData.length);
+    // console.log(`quizData: ${JSON.stringify(quizData)}`)
+    // console.log("quizData.length: " + quizData.length);
     const ui_question = (org_data, index) => {
         var data = org_data[index];
         return (
@@ -265,7 +336,7 @@ function CreateTopic() {
         return (
             <div style={{display: "flex", justifyContent: "flex-end"}}>
                 <MDButton variant="contained" color="error" onClick={() => {
-                    console.log("removing index: " + index);
+                    // console.log("removing index: " + index);
                     org_data.splice(index, 1);
                     set_data_quiz([...org_data]);
                 }}>Remove</MDButton>
@@ -279,7 +350,7 @@ function CreateTopic() {
                 <Grid item xs={12}>
                     <MDBox display="flex" flexDirection="column" alignItems="center" p={2}>
                         <MDButton variant="outlined" color="info" size="large" onClick={() => {
-                            console.log("Add question clicked");
+                            // console.log("Add question clicked");
                             const new_q = {
                                 "question":"",
                                 "selections":[""],
@@ -295,7 +366,7 @@ function CreateTopic() {
     };
 
     const quiz_ui = (quizData.length == 0) ? (ui_add_question(quizData)) : quizData.map((data, key) => {
-        console.log("quiz dataaaaa: "+JSON.stringify(data))
+        // console.log("quiz dataaaaa: "+JSON.stringify(data))
         const index = key;
         return (
             <div>
@@ -350,42 +421,7 @@ function CreateTopic() {
                         <MDTypography variant="h5">Create Your Topic</MDTypography>
                     </MDBox>
 
-                    <MDBox component="form" pb={3} px={3}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <FormField label="Topic Name" placeholder="Enter the topic name here" />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FormField label="Description" placeholder="Tell us about your topic" />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <div style={{display: "flex"}}>
-                                    {/* <MDBox> */}
-                                        <img src={SOL} style={{ width: 30, height: 30, alignSelf: 'center'}}/>
-                                    {/* </MDBox> */}
-                                    {/* <MDBox> */}
-                                        <FormField label="Course Fee ($SOL)" placeholder="Price for this course" type="number"/>
-                                    {/* </MDBox> */}
-                                </div>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormField label="Max Quota (0 = Unlimited)" placeholder="Max Quota for the course" type="number"/>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormField label="Pass Rate (50 = 50%)" placeholder="Pass rate of the course" type="number"/>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <div style={{display: "flex"}}>
-                                    <img src={ICON_YOUTUBE} style={{ width: 30, height: 30, alignSelf: 'center'}} />
-                                    <FormField label="Youtube Link" placeholder="Enter Video Link here" />
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </MDBox>
+                    {render_question_info(data_quiz_info)}
                 </Card>
 
                 <MDBox p={3}>
@@ -397,7 +433,33 @@ function CreateTopic() {
                 <Divider />
 
                 <MDBox display="flex" flexDirection="column" alignItems="center" p={2}>
-                    <MDButton variant="contained" color="success" size="large">
+                    <MDButton variant="contained" color="success" size="large" onClick={() => {
+                        set_isLoading(true);
+                        // console.log(`data_quiz: ${JSON.stringify(data_quiz)}`)
+                        // console.log(`data_quiz_info: ${JSON.stringify(data_quiz_info)}`)
+
+                        var content = data_quiz_info;
+                        content.list_question = data_quiz;
+                        let body = {
+                            data_quiz: content
+                        };
+
+                        
+                        // console.log(`body: ${JSON.stringify(body)}`)
+
+                        fetchAPI.do_fetch("post", "user/create_topic", body).then(
+                        (res) => {
+                            // set_isLoading(false);
+                            setRedirect("/homepage");
+                            setItemToEdit({ language_code: language });
+                        },
+                        (error) => {
+                            set_isLoading(false);
+                            console.log(`error: ${JSON.stringify(error)}`)
+                        }
+                        );
+                        
+                    }}>
                         <Icon>{"done"}</Icon>
                         &nbsp;
                         Create Topic

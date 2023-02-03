@@ -13,9 +13,9 @@ import Loc from "localization";
 function Question(props) {
   let body = props.body;
   let language = body.language_code;
-  let question = language === "en" ? body.question_eng : body.question; // Question string
-  let options = language === "en" ? body.selection_eng : body.selection; // options Array
-  let type = body.question_type; // 3 Types: radio, longRadio, multiple
+  let question = body.question;//language === "en" ? body.question_eng : body.question; // Question string
+  let options = body.selections;//language === "en" ? body.selection_eng : body.selection; // options Array
+  let type = "mc_long";//body.question_type; // 3 Types: radio, longRadio, multiple
   let questionid = body.id; // Question id (start from 0)
   let questionIndex = body.index; // Real index in question array
   let disable = body.disable; // Boolean for disable button

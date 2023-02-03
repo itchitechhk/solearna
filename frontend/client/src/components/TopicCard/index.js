@@ -30,11 +30,10 @@ import MDButton from "components/MDButton";
 import ICON_SOL from "assets/images/icons/currency/sol_icon.png";
 
 // Custom styles for ComplexProjectCard
-function ComplexProjectCard({ color, image, title, dateTime, description, members, dropdown, callback_onclick, isEnabled, price, totalJoin }) {
+function ComplexProjectCard({ color, image, title, max_quota, description, members, dropdown, callback_onclick, isEnabled, price, totalJoin }) {
   const renderMembers = members.map((member, key) => {
     const memberKey = `member-${key}`;
-
-    return (
+    return ( key+1 > totalJoin ? null :
       <MDAvatar
         key={memberKey}
         src={member}
@@ -114,13 +113,13 @@ function ComplexProjectCard({ color, image, title, dateTime, description, member
               </MDTypography>
             </MDBox>
           ) : null}
-          {dateTime ? (
+          {(max_quota != null) ? (
             <MDBox display="flex" flexDirection="column" lineHeight={0}>
               <MDTypography variant="button" fontWeight="medium">
-                {dateTime}
+                {max_quota == 0 ? "No Limit" : max_quota}
               </MDTypography>
               <MDTypography variant="button" fontWeight="regular" color="secondary">
-                Due date
+                {max_quota == 0 ? "" : "Max Quota"}
               </MDTypography>
             </MDBox>
           ) : null}
@@ -153,7 +152,7 @@ function ComplexProjectCard({ color, image, title, dateTime, description, member
 // Setting default values for the props of ComplexProjectCard
 ComplexProjectCard.defaultProps = {
   color: "dark",
-  dateTime: "",
+  max_quota: 0,
   members: [],
   dropdown: false,
 };
@@ -172,7 +171,7 @@ ComplexProjectCard.propTypes = {
   ]),
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  dateTime: PropTypes.string,
+  max_quota: PropTypes.number,
   description: PropTypes.node.isRequired,
   members: PropTypes.arrayOf(PropTypes.string),
   dropdown: PropTypes.oneOfType([

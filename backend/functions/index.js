@@ -21,7 +21,7 @@ const COLLECTION_USER = "data_user";
 const COLLECTION_QUIZ_QUESTION = "data_quiz_questions";
 const COLLECTION_QUIZ_INFO = "data_quiz_info";
 const COLLECTION_QUIZ_RESULT = "data_quiz_result";
-
+const COLLECTION_TOPIC = "data_topic";
 
 
 app.post('/test_post', (req, res) => 
@@ -189,12 +189,61 @@ app.post('/user/get_profile', itchi_dash_api.validateUserFirebaseIdToken, (req, 
 
 app.post('/user/create_topic', itchi_dash_api.validateUserFirebaseIdToken, (req, res) => 
 {
+    const data_creator_uid = req.user.uid;
+    var data_quiz = req.body.data_quiz;
+    if (data_quiz != undefined && data_quiz != null)
+    {
+        data_quiz.creator_uid = data_creator_uid;
+        data_quiz.participants = 0;
+        const item = {
+            targetID: null,
+            targetCollection: COLLECTION_TOPIC,
+            content: data_quiz
+        }
 
+        // console.log(`item: ${JSON.stringify(item)}`)
+        return itchi_dash_api.process_create_edit_itemList_withoutLog(req, [item], []).then((updatedList) => {
+            if (updatedList != null && updatedList.length > 0)
+            {
+              return res.json({
+                status: 200,
+                responString: "Create topic success",
+                data: {
+                    success: true,
+                }
+              });
+            }
+            else
+            {
+                return res.status(400).json({ responString: "Create topic fail" });
+            }
+        });
+    }
+    else
+    {
+        return res.status(400).json({ responString: "data_quiz missing" });
+    }
 });
 
-app.post('/user/upload_quiz', itchi_dash_api.validateUserFirebaseIdToken, (req, res) => 
+app.post('/user/list_topic', itchi_dash_api.validateUserFirebaseIdToken, (req, res) => 
 {
-
+    return itchi_dash_api.get_item_list(COLLECTION_TOPIC, 0, 6, "createDate", "desc", false).then(returnItem => {
+        if (returnItem != null)
+        {
+            return res.json({
+                status: 200,
+                responString: "Get topic list success",
+                data: {
+                    data_list: returnItem.data_list,
+                }
+              });
+            
+        }
+        else
+        {
+            return res.status(400).json({ responString: "Get topic fail" });
+        }
+    });
 });
 
 

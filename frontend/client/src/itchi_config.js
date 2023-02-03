@@ -11,7 +11,6 @@ const config = {
   version: core_config_version,
   language: "zh_Hant",
   // language: "en",
-  // serverBaseUrl: "http://localhost:5001/solearna/us-central1/app/"
-  serverBaseUrl: "https://us-central1-solearna.cloudfunctions.net/app/",
+  serverBaseUrl: "http://localhost:5001/solearna/us-central1/app/"
 };
 export default config;

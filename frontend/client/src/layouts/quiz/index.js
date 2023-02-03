@@ -27,7 +27,7 @@ function Quiz() {
   state.section = 0;
   const { title } = state;
   const { title_eng } = state;
-  const { passRate } = state;
+  // const { passRate } = state;
   const { language_code } = state;
   const {topicID} = state;
 
@@ -159,34 +159,34 @@ function Quiz() {
       topicID: topicID,
       language_code: language,
     };
-    console.log("topicID: " + topicID);
-    fetchAPI.do_fetch("post", "course/get_quiz_intro", body).then(
-      (res) => {
-        console.log("this is the result of quiz intro:", res.data);
-        // let temp = res.data.section_list.sort((a, b) =>
-        //   a.section_name > b.section_name ? 1 : -1
-        // );
-        // console.log("this is sorted:", temp);
-        set_quizData(res.data);
+    // console.log("topicID: " + topicID);
+    // fetchAPI.do_fetch("post", "course/get_quiz_intro", body).then(
+    //   (res) => {
+    //     console.log("this is the result of quiz intro:", res.data);
+    //     // let temp = res.data.section_list.sort((a, b) =>
+    //     //   a.section_name > b.section_name ? 1 : -1
+    //     // );
+    //     // console.log("this is sorted:", temp);
+    //     set_quizData(res.data);
 
-        console.log("data_quiz_data: " + JSON.stringify(data_quiz_data));
-        set_questionsArray(data_quiz_data.section_list);
+    //     console.log("data_quiz_data: " + JSON.stringify(data_quiz_data));
+        set_questionsArray(data_quiz_data.list_question);
         let tempArray = [];
-        data_quiz_data.section_list.map((dummy, key) => {
+        data_quiz_data.list_question.map((dummy, key) => {
           let body = { id: key, value: "" };
           tempArray.push(body);
         });
         setUserAnswerArray(tempArray);
         set_isCheckedSignIn(true);
         set_isLoading(false);
-      },
-      (error) => {
-        // console.log(`error: ${JSON.stringify(error)}`)
-        console.log("get quiz intro fail");
-        setRedirect("/homepage");
-        setItemToEdit({ language_code: language });
-      }
-    );
+    //   },
+    //   (error) => {
+    //     // console.log(`error: ${JSON.stringify(error)}`)
+    //     console.log("get quiz intro fail");
+    //     setRedirect("/homepage");
+    //     setItemToEdit({ language_code: language });
+    //   }
+    // );
 
     // const body2 = {
     //   topicID: topicID,
@@ -299,6 +299,8 @@ function Quiz() {
     });
     // body.question = `${key + 1}. ` + body.question;
     body.disable = endState;
+    // console.log(`body: ${JSON.stringify(body)}`);
+
     return (
       <div key={questionKey}>
         <Question
@@ -382,13 +384,13 @@ function Quiz() {
 
     UserAnswerArray.map((ans) => {
       let correct = false;
-      let checkArray = questionsArray[ans.id].correct_answer;
+      let checkArray = questionsArray[ans.id].correctIndex;
       let temp = [];
       // console.log(ans);
       for (let index = 0; index < checkArray.length; index++) {
         if (ans.value.includes(index)) {
-          temp.push("1");
-        } else temp.push("0");
+          temp.push(true);
+        } else temp.push(false);
       }
       // console.log("===============");
       // console.log(JSON.stringify(checkArray));
@@ -417,7 +419,7 @@ function Quiz() {
         (res) => {
           // console.log("this is the result of set quiz data:", res);
           setScore(temp * 100);
-          setPass(temp * 100 >= passRate);
+          setPass(temp * 100 >= data_quiz_data.pass_rate);
           set_isLoadingQuizResult(false);
           // const body2 = {
           //   language_code: language,
@@ -607,7 +609,8 @@ function Quiz() {
             color="dark"
             style={{ wordWrap: "break-word" }}
           >
-            {language === "en" ? quizData.quiz_name_eng : quizData.quiz_name}
+            {/* {language === "en" ? quizData.quiz_name_eng : quizData.quiz_name} */}
+            {data_quiz_data.topic_name}
           </MDTypography>
         </MDBox>
         <MDBox display="flex" flexDirection="row" pt="42px" alignItems="center">
@@ -628,7 +631,8 @@ function Quiz() {
             style={{ color: "#6C757D", wordWrap: "break-word" }}
             pl="72px"
           >
-            {language === "en" ? quizData.quiz_duration_eng : quizData.quiz_duration}
+            {/* {language === "en" ? quizData.quiz_duration_eng : quizData.quiz_duration} */}
+            {"No Time Limit"}
           </MDTypography>
           <MDTypography
             fontFamily="Roboto"
@@ -638,7 +642,7 @@ function Quiz() {
             style={{ color: "#6C757D", wordWrap: "break-word" }}
             pl="72px"
           >
-            {Loc.to_pass} {" "} {passRate}% {" "} {Loc.or_higher}
+            {Loc.to_pass} {" "} {data_quiz_data.pass_rate}% {" "} {Loc.or_higher}
           </MDTypography>
         </MDBox>
 
@@ -646,7 +650,7 @@ function Quiz() {
           <div>
           {/* {Youtube Video} */}
             <MDBox display="flex" flexDirection="row" pt="42px" alignItems="center">
-              <YoutubeEmbed embedId="53me-ICi_f8" />
+              <YoutubeEmbed embedId={data_quiz_data.youtube_embed_code} />
             </MDBox>
 
             {/* {Description} */}
@@ -664,9 +668,10 @@ function Quiz() {
                 textAlign="left"
                 style={{ color: "#6C757D", wordWrap: "break-word" }}
               >
-                {language === "en"
+                {/* {language === "en"
                   ? quizData.quiz_description_eng
-                  : quizData.quiz_description}
+                  : quizData.quiz_description} */}
+                  {data_quiz_data.topic_description}
               </MDTypography>
             </MDBox>
           </div>
@@ -779,7 +784,7 @@ function Quiz() {
                             textAlign="left"
                             style={{ wordWrap: "break-word" }}
                           >
-                            {Loc.to_pass} {" "} {passRate}% {" "} {Loc.or_higher}
+                            {Loc.to_pass} {" "} {data_quiz_data.pass_rate}% {" "} {Loc.or_higher}
                           </MDTypography>
                         </MDBox>
                         {/* <MDTypography
@@ -856,7 +861,7 @@ function Quiz() {
                             textAlign="left"
                             style={{ wordWrap: "break-word" }}
                           >
-                            {Loc.to_pass} {" "} {passRate}% {" "} {Loc.or_higher}
+                            {Loc.to_pass} {" "} {data_quiz_data.pass_rate}% {" "} {Loc.or_higher}
                           </MDTypography>
                           <MDBox
                             ml="182px"
